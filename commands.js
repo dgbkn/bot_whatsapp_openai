@@ -1,9 +1,10 @@
-let setting = require("dotenv").config().parsed;
+let setting = require("dotenv").config().parsed ?? process.env;
 const { Configuration, OpenAIApi } = require("openai");
 const axios = require('axios');
 const cheerio = require('cheerio');
 const util = require("util");
 
+const youtubesearchapi = require("youtube-search");
 
 
 function getMenu(prefix) {

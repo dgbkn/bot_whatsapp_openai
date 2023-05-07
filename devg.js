@@ -3,7 +3,7 @@ const fs = require("fs");
 const util = require("util");
 const chalk = require("chalk");
 const { Configuration, OpenAIApi } = require("openai");
-let setting = require("dotenv").config().parsed;
+let setting = require("dotenv").config().parsed ?? process.env;
 
 const { getMenu, textDavinci003, memeHandler, stableDiffusionApi, dalleHandler, ytApiHandler } = require("./commands");
 

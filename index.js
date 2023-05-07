@@ -1,4 +1,4 @@
-let setting = require("dotenv").config().parsed;
+let setting = require("dotenv").config().parsed ?? process.env;
 
 
 const sessionName = "merasession";
