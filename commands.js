@@ -2,13 +2,22 @@ let setting = require("dotenv").config().parsed;
 const { Configuration, OpenAIApi } = require("openai");
 const axios = require('axios');
 const cheerio = require('cheerio');
+const util = require("util");
+
+
 
 function getMenu(prefix) {
     return `*Whatsapp MLSC Bot*
 Ask anything to AI
+Cmd:${prefix}bot
+Give reply
+Example: ${prefix}bot what is nlp
+
 Cmd:${prefix}meme
 Give A Random meme
+Example: ${prefix}meme 
 
+*(MIDJOURNEY)*
 Cmd:${prefix}imagine
 Give a image based on query from midjounery
 Example: ${prefix}imagine sunshine days
@@ -17,7 +26,7 @@ Cmd:${prefix}video
 Give a video based on query
 Example: ${prefix}video give me some sunshine
 
-*(GIVE HER)*
+*(DALL-E)*
 Cmd: ${prefix}img
 Create an image from text`;
 }
@@ -79,7 +88,10 @@ async function stableDiffusionApi(prompt) {
 }
 
 
-async function memeHandler(client, prompt) {
+async function memeHandler(client,mek,from) {
+    try{
+
+    
     const no = Math.floor(Math.random() * 3);
 
     if (no == 1) {
@@ -120,11 +132,14 @@ async function memeHandler(client, prompt) {
 
         console.log(dat + header);
     }
+}catch(err){
+    console.log(util.format(err));
+}
 
 }
 
 
-async function dalleHandeler(client, prompt) {
+async function dalleHandler(prompt) {
     try {
         if (setting.keyopenai === "ISI_APIKEY_OPENAI_DISINI") {
             return;
@@ -140,8 +155,7 @@ async function dalleHandeler(client, prompt) {
             n: 1,
             size: "512x512",
         });
-        //console.log(response.data.data[0].url)
-        client.sendImage(from, response.data.data[0].url, text, mek);
+        return response.data.data[0].url;
     } catch (error) {
         if (error.response) {
             console.log(error.response.status);
@@ -149,10 +163,40 @@ async function dalleHandeler(client, prompt) {
             console.log(`${error.response.status}\n\n${error.response.data}`);
         } else {
             console.log(error);
-            // m.reply("Sorry, there seems to be an error :" + error.message);
         }
     }
 }
 
 
-module.exports = { getMenu, textDavinci003, stableDiffusionApi, memeHandler, stableDiffusionApi, dalleHandeler };
+
+async function ytApiHandler(client,text,from){
+    try {
+        var opts = {
+          maxResults: 4,
+          key: setting.yt_key
+        };
+        youtubesearchapi(text, opts, function (err, results) {
+          if (err) return console.log(err);
+
+          // console.dir(results);
+          // if(results.length > 3){
+          //   results = [results[0],results[1],results[2]];
+          // }
+
+          for (let i = 0; i < results.length; i++) {
+
+            const templateMessage = {
+              text: results[i]['title'] + "\n" + results[i]['link'],
+            };
+
+            const sendMsg = client.sendMessage(from, templateMessage);
+          }
+        });
+      }
+      catch (err) {
+        console.log(util.format(err));
+        m.reply("Sorry, there seems to be an error :" + err.message);
+      }
+}
+
+module.exports = { getMenu, textDavinci003, stableDiffusionApi, memeHandler, stableDiffusionApi, dalleHandler,ytApiHandler };
