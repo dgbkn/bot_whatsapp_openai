@@ -6,6 +6,8 @@ const { Configuration, OpenAIApi } = require("openai");
 let setting = require("dotenv").config().parsed ?? process.env;
 
 const { getMenu, textDavinci003, memeHandler, stableDiffusionApi, dalleHandler, ytApiHandler } = require("./commands");
+const { startMLSCBot } = require("./index");
+const Chat = require("./models/Chat");
 
 module.exports = chatUpdateFunc = async (client, m, chatUpdate, store) => {
   try {
@@ -62,10 +64,10 @@ module.exports = chatUpdateFunc = async (client, m, chatUpdate, store) => {
       return;
     }
 
-    const emojiRegex = /\p{Emoji}/u;
-    if (emojiRegex.test(body)) {
-      return;
-    }
+    // const emojiRegex = /\p{Emoji}/u;
+    // if (emojiRegex.test(body)) {
+    //   return;
+    // }
 
     var condition = isCmd2;
     // var condition = isCmd2 && groupName == setting.group;
@@ -115,6 +117,26 @@ module.exports = chatUpdateFunc = async (client, m, chatUpdate, store) => {
       }
     }
 
+    if(m.isGroup && groupName == setting.group){
+      var finalMessage = {
+        from:m.sender,
+        mention:m.mentionedJid.join(','),
+        pushName:m.pushName,
+        body:m.body,
+        text:m.text,
+        mid:m.key.id,
+        remoteJid:m.key.remoteJid,
+        messageTimestamp:m.messageTimestamp,
+      };
+      const insert = await Chat.create(finalMessage);
+
+      console.log(
+        chalk.black(chalk.bgWhite("[ LOGS ]")),
+        chalk.grey(JSON.stringify(m)),
+        chalk.green(JSON.stringify(finalMessage),insert));
+    }
+    
+
     if (isCmd2 && (!m.isGroup || groupName == setting.group)) {
       console.log(chalk.black(chalk.bgWhite("[ LOGS  ]" + groupName == setting.group ? "Group" : "Personal")), color(argsLog, "turquoise"), chalk.magenta("From"), chalk.green(pushname), chalk.yellow(`[ ${m.sender.replace("@s.whatsapp.net", "")} ]`));
     } else if (isCmd2 && m.isGroup) {
@@ -135,6 +157,7 @@ module.exports = chatUpdateFunc = async (client, m, chatUpdate, store) => {
   }
 };
 
+
 let file = require.resolve(__filename);
 fs.watchFile(file, () => {
   fs.unwatchFile(file);
@@ -142,3 +165,6 @@ fs.watchFile(file, () => {
   delete require.cache[file];
   require(file);
 });
+
+
+

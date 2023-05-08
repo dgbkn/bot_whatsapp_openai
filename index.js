@@ -1,5 +1,9 @@
 let setting = require("dotenv").config().parsed ?? process.env;
+process.env.TZ = 'Asia/Calcutta';
+const util = require("util");
 
+const sequelize = require('./config/database');
+const Chat = require("./models/Chat");
 
 const sessionName = "merasession";
 const owner = [setting.owner]; // Put your number here ex: ["62xxxxxxxxx"]
@@ -21,8 +25,12 @@ const chalk = require("chalk");
 const figlet = require("figlet");
 const _ = require("lodash");
 const PhoneNumber = require("awesome-phonenumber");
+const { textDavinci003 } = require("./commands");
 
 const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }) });
+
+var sockClient = {};
+
 
 const color = (text, color) => {
   return !color ? chalk.green(text) : chalk.keyword(color)(text);
@@ -185,7 +193,7 @@ async function startMLSCBot() {
   process.on("rejectionHandled", (promise) => {
     unhandledRejections.delete(promise);
   });
-  process.on("Something went wrong", function(err) {
+  process.on("Something went wrong", function (err) {
     console.log("Caught exception: ", err);
   });
 
@@ -350,10 +358,10 @@ async function startMLSCBot() {
     return proto.WebMessageInfo.fromObject(copy);
   };
 
+  sockClient = client;
   return client;
 }
 
-startMLSCBot();
 
 let file = require.resolve(__filename);
 fs.watchFile(file, () => {
@@ -363,5 +371,64 @@ fs.watchFile(file, () => {
   require(file);
 });
 
-require("http").createServer((_, res) => res.end("Alive!")).listen(8080)
+
+
+startMLSCBot();
+
+
+sequelize.sync().then(() => console.log('db is ready'));
+
+
+function formatAMPM(date) {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var ampm = hours >= 12 ? 'pm' : 'am';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+  var strTime = hours + ':' + minutes + ' ' + ampm;
+  return strTime;
+}
+
+
+
+require("http").createServer(async (req, res) => {
+  try {
+    var url = req.url;
+    if (url === '/messages') {
+      const msgs = await Chat.findAll();
+      res.write(JSON.stringify(msgs));
+      // res.end();
+    }
+
+    if (url === '/summarize') {
+      const msgs = await Chat.findAll();
+      var summary = `This is a whole chat of day in group called MLSC,Summarize the following conversation: \n`;
+      msgs.forEach((msg) => {
+        msg.body = msg.body.replaceAll("\n", "");
+        const dateFormat = new Date(msg.messageTimestamp);
+        const timeOfMsg = formatAMPM(dateFormat);
+        summary += `From:'${msg.pushName}',body:'${msg.body}',time:'${timeOfMsg}' \n`;
+      });
+
+      console.log(summary);
+      var chat_gpt_resp = await textDavinci003(summary);
+      sockClient.sendText(msgs[0].remoteJid, chat_gpt_resp);
+      res.write(chat_gpt_resp);
+    }
+
+    if (url === '/resetDb') {
+      const deleteChat = await Chat.destroy({
+        where: {},
+        truncate: true
+      });
+      console.log(deleteChat);
+      res.write("All Chats For Today Deleted ❌\n ");
+    }
+    res.end();
+  }
+  catch (err) {
+    console.log(err, err.message);
+  }
+}).listen(process.env.PORT ?? 8080);
 
