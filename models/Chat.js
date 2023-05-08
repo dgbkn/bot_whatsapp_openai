@@ -6,6 +6,8 @@ class Chat extends Model { };
 Chat.init({
     from: {
         type: DataTypes.STRING
+    }, key: {
+        type: DataTypes.STRING
     },
     mention: {
         type: DataTypes.STRING

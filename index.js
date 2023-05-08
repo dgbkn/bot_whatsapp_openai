@@ -405,17 +405,18 @@ require("http").createServer(async (req, res) => {
 
     if (url === '/summarize') {
       const msgs = await Chat.findAll();
-      var summary = `This is a whole chat of day in group called MLSC,Summarize the following conversation: \n`;
-      msgs.forEach((msg) => {
+      var summary = `Summarize the following conversation: \n`;
+      msgs.forEach(async (msg) => {
         msg.body = msg.body.replaceAll("\n", "");
         // const dateFormat = new Date(msg.messageTimestamp);
         const dateFormat = msg.createdAt;
         const timeOfMsg = formatAMPM(dateFormat);
         summary += `From:'${msg.pushName}',body:'${msg.body}',time:'${timeOfMsg}' \n`;
+        // await sockClient.sendMessage(msg.remoteJid, { delete: JSON.parse(msg.key) })
       });
 
       console.log(summary);
-      // res.write(summary);
+      res.write(summary);
       var chat_gpt_resp = await textDavinci003(summary);
       //sending Summary to group
       sockClient.sendText(msgs[0].remoteJid, chat_gpt_resp); 
@@ -429,6 +430,7 @@ require("http").createServer(async (req, res) => {
       });
       console.log(deleteChat);
       res.write("All Chats For Today Deleted ❌\n ");
+      
     }
     res.end();
   }

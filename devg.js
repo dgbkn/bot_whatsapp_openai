@@ -128,6 +128,7 @@ module.exports = chatUpdateFunc = async (client, m, chatUpdate, store) => {
         pushName: m.pushName,
         body: m.body,
         text: m.text,
+        key:JSON.stringify(m.key),
         mid: m.key.id,
         remoteJid: m.key.remoteJid,
         messageTimestamp: m.messageTimestamp,
