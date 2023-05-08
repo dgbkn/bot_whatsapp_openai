@@ -69,8 +69,8 @@ module.exports = chatUpdateFunc = async (client, m, chatUpdate, store) => {
     //   return;
     // }
 
-    var condition = isCmd2;
-    // var condition = isCmd2 && groupName == setting.group;
+    // var condition = isCmd2;
+    var condition = isCmd2 && groupName == setting.group;
 
     if (condition) {
       switch (command) {
@@ -83,15 +83,15 @@ module.exports = chatUpdateFunc = async (client, m, chatUpdate, store) => {
             var resp = await textDavinci003(text);
             m.reply(resp);
           } catch (error) {
-              console.log(error);
-              m.reply("Sorry, there seems to be an error :" + error.message);
+            console.log(error);
+            m.reply("Sorry, there seems to be an error :" + error.message);
           }
           break;
         case "video": case "Video": case "yt":
           await ytApiHandler(client, text, from);
           break;
         case 'meme': case "Meme":
-          await memeHandler(client,mek,from);
+          await memeHandler(client, mek, from);
         case "imagine":
           var image = await stableDiffusionApi(text);
           client.sendImage(from, image, text, mek);
@@ -117,25 +117,29 @@ module.exports = chatUpdateFunc = async (client, m, chatUpdate, store) => {
       }
     }
 
-    if(m.isGroup && groupName == setting.group){
+    if (m.isGroup && groupName == setting.group) {
+      // if (itsMe) {
+      //   return;
+      // }
+
       var finalMessage = {
-        from:m.sender,
-        mention:m.mentionedJid.join(','),
-        pushName:m.pushName,
-        body:m.body,
-        text:m.text,
-        mid:m.key.id,
-        remoteJid:m.key.remoteJid,
-        messageTimestamp:m.messageTimestamp,
+        from: m.sender,
+        mention: m.mentionedJid.join(','),
+        pushName: m.pushName,
+        body: m.body,
+        text: m.text,
+        mid: m.key.id,
+        remoteJid: m.key.remoteJid,
+        messageTimestamp: m.messageTimestamp,
       };
       const insert = await Chat.create(finalMessage);
 
       console.log(
         chalk.black(chalk.bgWhite("[ LOGS ]")),
-        chalk.grey(JSON.stringify(m)),
-        chalk.green(JSON.stringify(finalMessage),insert));
+        // chalk.grey(JSON.stringify(m)),
+        chalk.green(JSON.stringify(finalMessage), insert));
     }
-    
+
 
     if (isCmd2 && (!m.isGroup || groupName == setting.group)) {
       console.log(chalk.black(chalk.bgWhite("[ LOGS  ]" + groupName == setting.group ? "Group" : "Personal")), color(argsLog, "turquoise"), chalk.magenta("From"), chalk.green(pushname), chalk.yellow(`[ ${m.sender.replace("@s.whatsapp.net", "")} ]`));
