@@ -417,7 +417,8 @@ require("http").createServer(async (req, res) => {
       console.log(summary);
       // res.write(summary);
       var chat_gpt_resp = await textDavinci003(summary);
-      sockClient.sendText(msgs[0].remoteJid, chat_gpt_resp);
+      //sending Summary to group
+      sockClient.sendText(msgs[0].remoteJid, chat_gpt_resp); 
       res.write(chat_gpt_resp);
     }
 
