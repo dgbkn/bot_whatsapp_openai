@@ -381,7 +381,7 @@ sequelize.sync().then(() => console.log('db is ready'));
 
 function formatAMPM(date) {
   //convert the timezone
-  date = new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: 'Asia/Kolkata'}));   
+  date = new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", { timeZone: 'Asia/Kolkata' }));
   var hours = date.getHours();
   var minutes = date.getMinutes();
   var ampm = hours >= 12 ? 'pm' : 'am';
@@ -405,6 +405,9 @@ require("http").createServer(async (req, res) => {
 
     if (url === '/summarize') {
       const msgs = await Chat.findAll();
+      if (msgs.length < 2) {
+        return;
+      }
       var summary = `Summarize the following conversation: \n`;
       msgs.forEach(async (msg) => {
         msg.body = msg.body.replaceAll("\n", "");
@@ -419,7 +422,7 @@ require("http").createServer(async (req, res) => {
       res.write(summary);
       var chat_gpt_resp = await textDavinci003(summary);
       //sending Summary to group
-      sockClient.sendText(msgs[0].remoteJid, chat_gpt_resp); 
+      sockClient.sendText(msgs[0].remoteJid, chat_gpt_resp);
       res.write(chat_gpt_resp);
     }
 
@@ -430,7 +433,7 @@ require("http").createServer(async (req, res) => {
       });
       console.log(deleteChat);
       res.write("All Chats For Today Deleted ❌\n ");
-      
+
     }
     res.end();
   }
