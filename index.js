@@ -380,6 +380,8 @@ sequelize.sync().then(() => console.log('db is ready'));
 
 
 function formatAMPM(date) {
+  //convert the timezone
+  date = new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: 'Asia/Kolkata'}));   
   var hours = date.getHours();
   var minutes = date.getMinutes();
   var ampm = hours >= 12 ? 'pm' : 'am';
@@ -406,12 +408,14 @@ require("http").createServer(async (req, res) => {
       var summary = `This is a whole chat of day in group called MLSC,Summarize the following conversation: \n`;
       msgs.forEach((msg) => {
         msg.body = msg.body.replaceAll("\n", "");
-        const dateFormat = new Date(msg.messageTimestamp);
+        // const dateFormat = new Date(msg.messageTimestamp);
+        const dateFormat = msg.createdAt;
         const timeOfMsg = formatAMPM(dateFormat);
         summary += `From:'${msg.pushName}',body:'${msg.body}',time:'${timeOfMsg}' \n`;
       });
 
       console.log(summary);
+      // res.write(summary);
       var chat_gpt_resp = await textDavinci003(summary);
       sockClient.sendText(msgs[0].remoteJid, chat_gpt_resp);
       res.write(chat_gpt_resp);
