@@ -406,6 +406,8 @@ require("http").createServer(async (req, res) => {
     if (url === '/summarize') {
       const msgs = await Chat.findAll();
       if (msgs.length < 2) {
+        res.write("2 message condition not satisfied");
+        res.end();
         return;
       }
       var summary = `Summarize the following conversation: \n`;
