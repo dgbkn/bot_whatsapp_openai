@@ -280,4 +280,19 @@ async function summaryHandler(groupMetadata, m) {
     }
 }
 
-module.exports = { getMenu, textDavinci003, stableDiffusionApi, memeHandler, stableDiffusionApi, dalleHandler, ytApiHandler,summaryHandler, calculateGptTokens, generateSummaryRecursively };
+
+function formatAMPM(date) {
+    //convert the timezone
+    date = new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", { timeZone: 'Asia/Kolkata' }));
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    return strTime;
+  }
+
+  
+module.exports = {formatAMPM, getMenu, textDavinci003, stableDiffusionApi, memeHandler, stableDiffusionApi, dalleHandler, ytApiHandler,summaryHandler, calculateGptTokens, generateSummaryRecursively };

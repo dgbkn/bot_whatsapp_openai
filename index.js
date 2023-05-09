@@ -25,7 +25,7 @@ const chalk = require("chalk");
 const figlet = require("figlet");
 const _ = require("lodash");
 const PhoneNumber = require("awesome-phonenumber");
-const { textDavinci003, generateSummaryRecursively } = require("./functions");
+const { textDavinci003, generateSummaryRecursively, formatAMPM } = require("./functions");
 
 const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }) });
 
@@ -379,18 +379,6 @@ startMLSCBot();
 sequelize.sync().then(() => console.log('db is ready'));
 
 
-function formatAMPM(date) {
-  //convert the timezone
-  date = new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", { timeZone: 'Asia/Kolkata' }));
-  var hours = date.getHours();
-  var minutes = date.getMinutes();
-  var ampm = hours >= 12 ? 'pm' : 'am';
-  hours = hours % 12;
-  hours = hours ? hours : 12; // the hour '0' should be '12'
-  minutes = minutes < 10 ? '0' + minutes : minutes;
-  var strTime = hours + ':' + minutes + ' ' + ampm;
-  return strTime;
-}
 
 
 
