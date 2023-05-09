@@ -416,7 +416,8 @@ require("http").createServer(async (req, res) => {
         // const dateFormat = new Date(msg.messageTimestamp);
         const dateFormat = msg.createdAt;
         const timeOfMsg = formatAMPM(dateFormat);
-        summary += `From:'${msg.pushName}',body:'${msg.body}',time:'${timeOfMsg}' \n`;
+        // summary += `From:'${msg.pushName}',body:'${msg.body}',time:'${timeOfMsg}' \n`;
+        summary += `From:'${msg.pushName}',body:'${msg.body}' \n`;        
         // await sockClient.sendMessage(msg.remoteJid, { delete: JSON.parse(msg.key) })
       });
 

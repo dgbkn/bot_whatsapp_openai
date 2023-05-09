@@ -140,7 +140,7 @@ async function memeHandler(client,mek,from) {
 }
 
 
-async function dalleHandler(prompt) {
+async function dalleHandler(prompt,m) {
     try {
         if (setting.keyopenai === "ISI_APIKEY_OPENAI_DISINI") {
             return;
@@ -158,19 +158,14 @@ async function dalleHandler(prompt) {
         });
         return response.data.data[0].url;
     } catch (error) {
-        if (error.response) {
-            console.log(error.response.status);
-            console.log(error.response.data);
-            console.log(`${error.response.status}\n\n${error.response.data}`);
-        } else {
-            console.log(error);
-        }
+        console.log(error);
+        m.reply("Sorry, there seems to be an error :" + error.message);
     }
 }
 
 
 
-async function ytApiHandler(client,text,from){
+async function ytApiHandler(client,text,from,m){
     try {
         var opts = {
           maxResults: 4,

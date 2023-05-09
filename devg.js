@@ -88,7 +88,7 @@ module.exports = chatUpdateFunc = async (client, m, chatUpdate, store) => {
           }
           break;
         case "video": case "Video": case "yt":
-          await ytApiHandler(client, text, from);
+          await ytApiHandler(client, text, from,m);
           break;
         case 'meme': case "Meme":
           await memeHandler(client, mek, from);
@@ -97,7 +97,7 @@ module.exports = chatUpdateFunc = async (client, m, chatUpdate, store) => {
           client.sendImage(from, image, text, mek);
           break;
         case "img": case "ai-img": case "image": case "images":
-          var image = await dalleHandler(text);
+          var image = await dalleHandler(text,m);
           client.sendImage(from, image, text, mek);
           break;
         default: {
