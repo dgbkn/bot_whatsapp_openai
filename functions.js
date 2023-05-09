@@ -64,7 +64,7 @@ async function stableDiffusionApi(prompt) {
         {
             'key': setting.stablediffusionkey,
             'model_id': 'midjourney',
-            // 'prompt': text + ", Unreal Engine 5, Octane Render, Redshift, ((cinematic lighting)), f/1.4, ISO 200, 1/160s, 8K, RAW, unedited, symmetrical balance, in-frame",             
+            // 'prompt': prompt  + ", Unreal Engine 5, Octane Render, Redshift, ((cinematic lighting)), f/1.4, ISO 200, 1/160s, 8K, RAW, unedited, symmetrical balance, in-frame",             
             'prompt': prompt + ",art by midjourney,cgi",
             'negative_prompt': '',
             'width': '512',
