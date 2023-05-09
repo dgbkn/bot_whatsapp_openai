@@ -69,8 +69,8 @@ module.exports = chatUpdateFunc = async (client, m, chatUpdate, store) => {
     //   return;
     // }
 
-    // var condition = isCmd2;
-    var condition = isCmd2 && groupName == setting.group;
+    var condition = isCmd2;
+    // var condition = isCmd2 && groupName == setting.group;
 
     if (condition) {
       switch (command) {
@@ -102,7 +102,7 @@ module.exports = chatUpdateFunc = async (client, m, chatUpdate, store) => {
           break;
         case "summary":case "summarize":
         await summaryHandler(groupMetadata,m);
-        
+
         default: {
           if (isCmd2 && messageBody.toLowerCase() != undefined) {
             if (m.chat.endsWith("broadcast")) return;
