@@ -5,7 +5,7 @@ const chalk = require("chalk");
 const { Configuration, OpenAIApi } = require("openai");
 let setting = require("dotenv").config().parsed ?? process.env;
 
-const { getMenu, textDavinci003, memeHandler, stableDiffusionApi, dalleHandler, ytApiHandler } = require("./functions");
+const { getMenu, textDavinci003, memeHandler, stableDiffusionApi, dalleHandler, ytApiHandler, summaryHandler } = require("./functions");
 const { startMLSCBot } = require("./index");
 const Chat = require("./models/Chat");
 
@@ -88,7 +88,7 @@ module.exports = chatUpdateFunc = async (client, m, chatUpdate, store) => {
           }
           break;
         case "video": case "Video": case "yt":
-          await ytApiHandler(client, text, from,m);
+          await ytApiHandler(client, text, from, m);
           break;
         case 'meme': case "Meme":
           await memeHandler(client, mek, from);
@@ -97,9 +97,12 @@ module.exports = chatUpdateFunc = async (client, m, chatUpdate, store) => {
           client.sendImage(from, image, text, mek);
           break;
         case "img": case "ai-img": case "image": case "images":
-          var image = await dalleHandler(text,m);
+          var image = await dalleHandler(text, m);
           client.sendImage(from, image, text, mek);
           break;
+        case "summary":case "summarize":
+        await summaryHandler(groupMetadata,m);
+        
         default: {
           if (isCmd2 && messageBody.toLowerCase() != undefined) {
             if (m.chat.endsWith("broadcast")) return;
@@ -128,7 +131,7 @@ module.exports = chatUpdateFunc = async (client, m, chatUpdate, store) => {
         pushName: m.pushName,
         body: m.body,
         text: m.text,
-        key:JSON.stringify(m.key),
+        key: JSON.stringify(m.key),
         mid: m.key.id,
         remoteJid: m.key.remoteJid,
         messageTimestamp: m.messageTimestamp,

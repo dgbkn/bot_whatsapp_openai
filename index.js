@@ -25,7 +25,7 @@ const chalk = require("chalk");
 const figlet = require("figlet");
 const _ = require("lodash");
 const PhoneNumber = require("awesome-phonenumber");
-const { textDavinci003 } = require("./functions");
+const { textDavinci003, generateSummaryRecursively } = require("./functions");
 
 const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }) });
 
@@ -410,22 +410,23 @@ require("http").createServer(async (req, res) => {
         res.end();
         return;
       }
-      var summary = `Summarize the following conversation: \n`;
+      var summary = ``;
       msgs.forEach(async (msg) => {
         msg.body = msg.body.replaceAll("\n", "");
-        // const dateFormat = new Date(msg.messageTimestamp);
-        const dateFormat = msg.createdAt;
+        const dateFormat = new Date(msg.createdAt);
         const timeOfMsg = formatAMPM(dateFormat);
         // summary += `From:'${msg.pushName}',body:'${msg.body}',time:'${timeOfMsg}' \n`;
         summary += `From:'${msg.pushName}',body:'${msg.body}' \n`;        
         // await sockClient.sendMessage(msg.remoteJid, { delete: JSON.parse(msg.key) })
       });
 
-      console.log(summary);
-      res.write(summary);
-      var chat_gpt_resp = await textDavinci003(summary);
+      // var chat_gpt_resp = await textDavinci003(summary);
+      // sockClient.sendText(msgs[0].remoteJid, chat_gpt_resp);
+     
+      var chat_gpt_resp = await generateSummaryRecursively(summary);
       //sending Summary to group
       sockClient.sendText(msgs[0].remoteJid, chat_gpt_resp);
+      res.write(summary);
       res.write(chat_gpt_resp);
     }
 
