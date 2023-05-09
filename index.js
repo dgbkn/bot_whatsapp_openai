@@ -25,7 +25,7 @@ const chalk = require("chalk");
 const figlet = require("figlet");
 const _ = require("lodash");
 const PhoneNumber = require("awesome-phonenumber");
-const { textDavinci003 } = require("./commands");
+const { textDavinci003 } = require("./functions");
 
 const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }) });
 
