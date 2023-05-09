@@ -161,8 +161,15 @@ async function dalleHandler(prompt, m) {
         });
         return response.data.data[0].url;
     } catch (error) {
-        console.log(error);
-        m.reply("Sorry, there seems to be an error :" + error.message);
+        if (error.response) {
+            console.log(error.response.status);
+            console.log(error.response.data);
+            var errMsg = error.response.data.error.message;
+            m.reply("Sorry, there seems to be an error :" + errMsg);
+          } else {
+            console.log(error.message);
+            m.reply("Sorry, there seems to be an error :" + error.message);
+          }
     }
 }
 
