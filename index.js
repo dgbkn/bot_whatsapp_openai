@@ -8,7 +8,7 @@ const Chat = require("./models/Chat");
 const sessionName = "merasession";
 const owner = [setting.owner]; // Put your number here ex: ["62xxxxxxxxx"]
 const {
-  default: devgConnect,
+  default: makeWASocket,
   useMultiFileAuthState,
   DisconnectReason,
   fetchLatestBaileysVersion,
@@ -159,7 +159,7 @@ async function startMLSCBot() {
     )
   );
 
-  const client = devgConnect({
+  const client = makeWASocket({
     logger: pino({ level: "silent" }),
     printQRInTerminal: true,
     browser: ["Wa-MLSC-bot - devg", "Safari", "5.1.7"],
