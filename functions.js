@@ -247,9 +247,10 @@ async function summaryHandler(groupMetadata, m) {
         });
         
         console.log("Current Sender:");
-        console.log(JSON.parse(currentSender));
+        currentSender = currentSender[0];
+        console.log(currentSender);
 
-        if (!currentSender.isAdmin) {
+        if (!(currentSender.admin == "admin" || currentSender.admin == "superadmin")) {
             m.reply(`You must be an admin to use this command`);
             return;
         }
