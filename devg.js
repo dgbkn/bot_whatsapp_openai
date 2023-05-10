@@ -5,7 +5,7 @@ const chalk = require("chalk");
 const { Configuration, OpenAIApi } = require("openai");
 let setting = require("dotenv").config().parsed ?? process.env;
 
-const { getMenu, textDavinci003, memeHandler, stableDiffusionApi, dalleHandler, ytApiHandler, summaryHandler } = require("./functions");
+const { getMenu, textDavinci003, memeHandler, stableDiffusionApi, dalleHandler, ytApiHandler, summaryHandler, freeBingGPT } = require("./functions");
 const { startMLSCBot } = require("./index");
 const Chat = require("./models/Chat");
 
@@ -102,6 +102,8 @@ module.exports = chatUpdateFunc = async (client, m, chatUpdate, store) => {
           break;
         case "summary":case "summarize":
         await summaryHandler(groupMetadata,m);
+        case "freegpt":
+        await freeBingGPT(text,m);
 
         default: {
           if (isCmd2 && messageBody.toLowerCase() != undefined) {

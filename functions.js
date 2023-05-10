@@ -166,10 +166,10 @@ async function dalleHandler(prompt, m) {
             console.log(error.response.data);
             var errMsg = error.response.data.error.message;
             m.reply("Sorry, there seems to be an error :" + errMsg);
-          } else {
+        } else {
             console.log(error.message);
             m.reply("Sorry, there seems to be an error :" + error.message);
-          }
+        }
     }
 }
 
@@ -245,7 +245,7 @@ async function summaryHandler(groupMetadata, m) {
         var currentSender = participants.filter(participant => {
             return participant.id === senderId;
         });
-        
+
         console.log("Current Sender:");
         currentSender = currentSender[0];
         console.log(currentSender);
@@ -292,7 +292,18 @@ function formatAMPM(date) {
     minutes = minutes < 10 ? '0' + minutes : minutes;
     var strTime = hours + ':' + minutes + ' ' + ampm;
     return strTime;
-  }
+}
 
-  
-module.exports = {formatAMPM, getMenu, textDavinci003, stableDiffusionApi, memeHandler, stableDiffusionApi, dalleHandler, ytApiHandler,summaryHandler, calculateGptTokens, generateSummaryRecursively };
+async function freeBingGPT(prompt, m) {
+    try {
+        var res = await axios('https://tempmail.theunknowwn.repl.co/gpt/' + encodeURIComponent(prompt));
+        var resp = res.data.text;
+        m.reply(resp);
+    } catch (err) {       
+        console.log(util.format(err));
+        m.reply("Error:" + err.message)
+    }
+}
+
+
+module.exports = { formatAMPM, freeBingGPT,getMenu, textDavinci003, stableDiffusionApi, memeHandler, stableDiffusionApi, dalleHandler, ytApiHandler, summaryHandler, calculateGptTokens, generateSummaryRecursively };
