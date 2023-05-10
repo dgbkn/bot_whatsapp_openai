@@ -32,7 +32,15 @@ Example: ${prefix}video give me some sunshine
 
 *(DALL-E)*
 Cmd: ${prefix}img
-Create an image from text`;
+Create an image from text
+
+
+Cmd:${prefix}freegpt
+Give reply from free bing gpt(slow)
+Example: ${prefix}freegpt what is nlp
+`;
+
+
 }
 
 
